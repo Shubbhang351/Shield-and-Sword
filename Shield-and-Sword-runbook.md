@@ -53,14 +53,18 @@ Shield-and-Sword/
 │   │   ├── __init__.py
 │   │   └── models.py           # Core dataclasses: Transaction, EmailPayload, RiskEvaluation, RiskSeverity, RiskAction
 │   ├── rules/
-│   │   └── __init__.py         # Statistical rule engines & deterministic logic
+│   │   ├── __init__.py         # Public statistical rule API
+│   │   ├── base.py             # Abstract rule interface
+│   │   ├── engine.py           # Rule registration and score aggregation
+│   │   └── transaction_rules.py # Deterministic transaction anomaly rules
 │   ├── llm/
 │   │   └── __init__.py         # Ollama & Gemini LLM agent wrappers
 │   └── pipeline/
 │       └── __init__.py         # Hybrid risk engine orchestration pipeline
 └── tests/
     ├── __init__.py
-    └── test_models.py          # Unit tests for core data models
+    ├── test_models.py          # Unit tests for core data models
+    └── test_rules.py           # Unit tests for transaction rules and engine
 ```
 
 ---
@@ -88,6 +92,18 @@ Shield-and-Sword/
 
 ---
 
+### Layer 1 Statistical Transaction Rule Engine
+* **Date:** 2026-10-04
+* **Agent:** Codex
+
+#### Files Created / Modified
+* **`src/rules/base.py`**: Added the abstract `BaseRule` contract and standardized rule result builder.
+* **`src/rules/transaction_rules.py`**: Added configurable high-amount, high-risk-category, and suspicious-location/IP-CIDR rules. Jurisdiction matching uses caller-supplied exact labels and CIDRs; it does not perform geolocation.
+* **`src/rules/engine.py`**: Added rule registration, result validation, triggered-rule detail collection, and a 0–100 aggregate score cap.
+* **`src/rules/__init__.py`**: Exported the base interface, concrete rules, and engine.
+* **`tests/test_rules.py`**: Added tests for clean and fraud-like transactions, threshold boundaries, case-insensitive categories, configured IP ranges, and duplicate registration. The standard-library unittest suite passed on Python 3.13 (12 tests).
+* **`Shield-and-Sword-runbook.md`**: Updated the architecture map, implementation log, and Milestone 2 progress.
+
 ## 5. Project Milestones & Progress Tracker
 
 - [x] **Milestone 1: Project Scaffolding & Core Data Models**
@@ -98,9 +114,9 @@ Shield-and-Sword/
   - [x] Update `Shield-and-Sword-runbook.md` with implementation log & structure map
 
 - [ ] **Milestone 2: Statistical Rule Engine (`src/rules/`)**
-  - [ ] Implement deterministic rule base for transaction anomaly detection
+  - [x] Implement deterministic rule base for transaction anomaly detection
   - [ ] Implement email header and text keyword heuristic rule layer
-  - [ ] Write unit tests for rule layer evaluation
+  - [x] Write unit tests for rule layer evaluation
 
 - [ ] **Milestone 3: Local & Cloud LLM Integration (`src/llm/`)**
   - [ ] Implement Ollama client wrapper for local offline inference (`qwen2.5-coder`)
