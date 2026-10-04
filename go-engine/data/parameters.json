@@ -1,0 +1,200 @@
+{
+  "version": 1,
+  "parameters": [
+    {
+      "name": "amount",
+      "type": "number",
+      "source": "input",
+      "event_types": ["transaction"],
+      "input_keys": ["amount"],
+      "required": true,
+      "should_log_value": false
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "source": "input",
+      "event_types": ["transaction"],
+      "input_keys": ["currency"],
+      "required": true,
+      "should_log_value": false
+    },
+    {
+      "name": "merchant_category",
+      "type": "string",
+      "source": "input",
+      "event_types": ["transaction"],
+      "input_keys": ["merchant_category"],
+      "required": true,
+      "should_log_value": false
+    },
+    {
+      "name": "ip",
+      "type": "string",
+      "source": "input",
+      "event_types": ["transaction", "security_event"],
+      "input_keys": ["ip"],
+      "required": false,
+      "should_log_value": false
+    },
+    {
+      "name": "attempts_ip_5m",
+      "type": "integer",
+      "source": "redis",
+      "event_types": ["transaction", "security_event"],
+      "redis_key_template": "attempts:ip:{ip}",
+      "window": "5m",
+      "required": false,
+      "should_log_value": false
+    },
+    {
+      "name": "sender",
+      "type": "string",
+      "source": "input",
+      "event_types": ["email"],
+      "input_keys": ["sender"],
+      "required": true,
+      "should_log_value": false
+    },
+    {
+      "name": "sender_domain",
+      "type": "string",
+      "source": "derived",
+      "event_types": ["email"],
+      "input_keys": ["sender"],
+      "resolver": "email.sender_domain",
+      "required": true,
+      "should_log_value": false
+    },
+    {
+      "name": "reply_to_domain",
+      "type": "string",
+      "source": "derived",
+      "event_types": ["email"],
+      "input_keys": ["reply_to"],
+      "resolver": "email.reply_to_domain",
+      "required": false,
+      "should_log_value": false
+    },
+    {
+      "name": "subject",
+      "type": "string",
+      "source": "input",
+      "event_types": ["email"],
+      "input_keys": ["subject"],
+      "required": false,
+      "should_log_value": false
+    },
+    {
+      "name": "body_text",
+      "type": "string",
+      "source": "input",
+      "event_types": ["email"],
+      "input_keys": ["body_text"],
+      "required": false,
+      "should_log_value": false
+    },
+    {
+      "name": "url_domains",
+      "type": "string_list",
+      "source": "derived",
+      "event_types": ["email"],
+      "input_keys": ["body_text"],
+      "resolver": "email.extract_url_domains",
+      "required": false,
+      "should_log_value": false
+    },
+    {
+      "name": "blocked_url_domains",
+      "type": "string_list",
+      "source": "memory",
+      "event_types": ["email"],
+      "resolver": "lists.blocked_url_domains",
+      "required": false,
+      "should_log_value": false
+    },
+    {
+      "name": "spf_pass",
+      "type": "boolean",
+      "source": "input",
+      "event_types": ["email"],
+      "input_keys": ["spf_pass"],
+      "required": false,
+      "should_log_value": false
+    },
+    {
+      "name": "dkim_pass",
+      "type": "boolean",
+      "source": "input",
+      "event_types": ["email"],
+      "input_keys": ["dkim_pass"],
+      "required": false,
+      "should_log_value": false
+    },
+    {
+      "name": "dmarc_pass",
+      "type": "boolean",
+      "source": "input",
+      "event_types": ["email"],
+      "input_keys": ["dmarc_pass"],
+      "required": false,
+      "should_log_value": false
+    },
+    {
+      "name": "source_ip",
+      "type": "string",
+      "source": "input",
+      "event_types": ["security_event"],
+      "input_keys": ["source_ip"],
+      "required": true,
+      "should_log_value": false
+    },
+    {
+      "name": "target_service",
+      "type": "string",
+      "source": "input",
+      "event_types": ["security_event"],
+      "input_keys": ["target_service"],
+      "required": false,
+      "should_log_value": false
+    },
+    {
+      "name": "http_method",
+      "type": "string",
+      "source": "input",
+      "event_types": ["security_event"],
+      "input_keys": ["http_method"],
+      "required": false,
+      "should_log_value": false
+    },
+    {
+      "name": "auth_result",
+      "type": "string",
+      "source": "input",
+      "event_types": ["security_event"],
+      "input_keys": ["auth_result"],
+      "required": false,
+      "should_log_value": false
+    },
+    {
+      "name": "failed_logins_ip_5m",
+      "type": "integer",
+      "source": "redis",
+      "event_types": ["security_event"],
+      "redis_key_template": "failed-logins:ip:{source_ip}",
+      "window": "5m",
+      "required": false,
+      "should_log_value": false
+    },
+    {
+      "name": "requests_ip_1m",
+      "type": "integer",
+      "source": "redis",
+      "event_types": ["security_event"],
+      "redis_key_template": "requests:ip:{source_ip}",
+      "window": "1m",
+      "required": false,
+      "should_log_value": false
+    }
+  ]
+}

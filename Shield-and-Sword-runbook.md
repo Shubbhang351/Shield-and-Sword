@@ -65,6 +65,20 @@ Shield-and-Sword/
     ├── __init__.py
     ├── test_models.py          # Unit tests for core data models
     └── test_rules.py           # Unit tests for transaction rules and engine
+└── go-engine/
+    ├── go.mod
+    ├── README.md
+    ├── cmd/ (entrypoint to be added)
+    ├── data/
+    │   ├── rules.json
+    │   └── parameters.json
+    ├── pkg/
+    │   ├── context/             # SessionContext and lazy fetch (next step)
+    │   ├── engine/              # Rule orchestration (next step)
+    │   ├── models/              # Shared event, rule, and result models
+    │   ├── rules/               # CEL compilation/evaluation (next step)
+    │   └── store/               # Storage interfaces
+    └── internal/store/jsonfile/ # Current JSON-backed CRUD adapter
 ```
 
 ---
@@ -104,6 +118,21 @@ Shield-and-Sword/
 * **`tests/test_rules.py`**: Added tests for clean and fraud-like transactions, threshold boundaries, case-insensitive categories, configured IP ranges, and duplicate registration. The standard-library unittest suite passed on Python 3.13 (12 tests).
 * **`Shield-and-Sword-runbook.md`**: Updated the architecture map, implementation log, and Milestone 2 progress.
 
+### Go Engine v1 Foundation — Phase 1, Step 1.1
+* **Date:** 2026-10-04
+* **Agent:** Codex
+
+#### Files Created / Modified
+* **`go-engine/go.mod`**: Started an isolated Go module for the v1 deterministic engine.
+* **`go-engine/pkg/models/models.go`**: Added common evaluation envelope, event/action/rule/value/source types, parameter definitions, and triggered-result models.
+* **`go-engine/pkg/store/store.go`**: Added RuleStore and ParameterStore interfaces for list/get/create/update/delete operations.
+* **`go-engine/internal/store/jsonfile/store.go`**: Added a single-process JSON adapter with CRUD, context cancellation checks, and atomic file replacement.
+* **`go-engine/data/rules.json`**: Added an empty versioned starter rule catalog.
+* **`go-engine/data/parameters.json`**: Added starter transaction, email, and security-event parameter definitions, including input, derived, memory, and Redis-backed examples.
+* **`go-engine/pkg/context/doc.go`, `go-engine/pkg/rules/doc.go`, `go-engine/pkg/engine/doc.go`**: Established package boundaries for the next Phase 1 steps.
+* **`go-engine/README.md`**: Documented event routing, lazy resolution, storage/cache boundaries, and the phased implementation plan.
+* **`Shield-and-Sword-runbook.md`**: Updated the structure map, implementation log, and Go Engine milestone. Go module compilation was verified with `go build ./...` (Go 1.23.5).
+
 ## 5. Project Milestones & Progress Tracker
 
 - [x] **Milestone 1: Project Scaffolding & Core Data Models**
@@ -127,3 +156,8 @@ Shield-and-Sword/
   - [ ] Implement pipeline orchestrator combining rule scores and LLM scores
   - [ ] Define disposition logic (`ALLOW`, `REVIEW`, `BLOCK`)
   - [ ] Integration testing across rules, LLMs, and pipeline
+
+- [ ] **Milestone 5: Go Engine v1 — Phase 1**
+  - [x] Step 1.1: Establish Go module, directory boundaries, core models, storage contracts, and JSON CRUD adapter
+  - [ ] Step 1.2: Implement SessionContext and lazy, memoized parameter fetchers
+  - [ ] Step 1.3: Compile and evaluate CEL rules with lazy activation and short-circuit behavior
